@@ -2,12 +2,12 @@ const { Buffer } = require("buffer");
 
 /**
  * JSDoc types so that we get type hints for Client
- * 
+ *
  * @typedef { import("ads-client").Client } Client
- * 
+ *
  * @typedef ConnectionNode
  * @property {() => Client} getClient Returns the `Client` instance for `ads-client`
-*/
+ */
 
 module.exports = function (RED) {
   function AdsClientWriteRaw(config) {
@@ -15,13 +15,8 @@ module.exports = function (RED) {
 
     //Properties
     this.name = config.name;
-    this.indexGroup = config.indexGroup === ""
-      ? null
-      : parseInt(config.indexGroup);
-    
-    this.indexOffset = config.indexOffset === ""
-      ? null
-      : parseInt(config.indexOffset);
+    this.indexGroup = config.indexGroup === "" ? null : parseInt(config.indexGroup);
+    this.indexOffset = config.indexOffset === "" ? null : parseInt(config.indexOffset);
 
     /**
      * Instance of the ADS connection node
@@ -43,20 +38,20 @@ module.exports = function (RED) {
       }
 
       //Override with msg.topic properties (if any)
+      let indexGroupToWrite = this.indexGroup;
+      let indexOffsetToWrite = this.indexOffset;
       if (typeof msg.topic === "object") {
-        //indexGroup
         if (msg.topic.indexGroup !== undefined) {
-          this.indexGroup = msg.topic.indexGroup;
+          indexGroupToWrite = msg.topic.indexGroup;
         }
 
-        //indexOffset
         if (msg.topic.indexOffset !== undefined) {
-          this.indexOffset = msg.topic.indexOffset;
+          indexOffsetToWrite = msg.topic.indexOffset;
         }
       }
 
       //Checking that all required parameters are provided
-      if (this.indexGroup == null) {
+      if (indexGroupToWrite == null) {
         this.status({
           fill: "red",
           shape: "dot",
@@ -66,8 +61,7 @@ module.exports = function (RED) {
         var err = new Error(`Index group is not valid`);
         done ? done(err) : this.error(err, msg);
         return;
-       
-      } else if (this.indexOffset == null) {
+      } else if (indexOffsetToWrite == null) {
         this.status({
           fill: "red",
           shape: "dot",
@@ -96,7 +90,6 @@ module.exports = function (RED) {
         //Try to connect
         try {
           await this.connection.connect();
-
         } catch (err) {
           //Failed to connect, we can't work..
           this.status({
@@ -111,8 +104,9 @@ module.exports = function (RED) {
 
       //Finally, writing the data
       try {
-        const res = await this.connection.getClient()
-          .writeRaw(this.indexGroup, this.indexOffset, msg.payload);
+        const res = await this.connection
+          .getClient()
+          .writeRaw(indexGroupToWrite, indexOffsetToWrite, msg.payload);
 
         //We are here -> success
         this.status({
@@ -135,7 +129,7 @@ module.exports = function (RED) {
           shape: "dot",
           text: `Error: Last write failed`,
         });
-        
+
         this.connection.formatError(err, msg);
         done ? done(err) : this.error(err, msg);
         return;

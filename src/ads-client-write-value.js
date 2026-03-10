@@ -1,11 +1,11 @@
 /**
  * JSDoc types so that we get type hints for Client
- * 
+ *
  * @typedef { import("ads-client").Client } Client
- * 
+ *
  * @typedef ConnectionNode
  * @property {() => Client} getClient Returns the `Client` instance for `ads-client`
-*/
+ */
 
 module.exports = function (RED) {
   function AdsClientWriteValue(config) {
@@ -37,15 +37,15 @@ module.exports = function (RED) {
       }
 
       //We need to have string in msg.topic if path is empty
+      let pathToWrite = this.path;
       if (this.path === "" && typeof msg.topic === "string") {
-        this.path = msg.topic;
+        pathToWrite = msg.topic;
       }
 
       if (!this.connection.isConnected()) {
         //Try to connect
         try {
           await this.connection.connect();
-
         } catch (err) {
           //Failed to connect, we can't work..
           this.status({
@@ -63,7 +63,7 @@ module.exports = function (RED) {
       try {
         const res = await this.connection
           .getClient()
-          .writeValue(this.path, msg.payload, this.autoFill);
+          .writeValue(pathToWrite, msg.payload, this.autoFill);
 
         //We are here -> success
         this.status({
@@ -83,7 +83,6 @@ module.exports = function (RED) {
         if (done) {
           done();
         }
-
       } catch (err) {
         this.status({
           fill: "red",
