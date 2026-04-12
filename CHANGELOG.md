@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [2.0.1] - 12.04.2026
 
 ### Changes
-- Bug fix: If write node was used with overriding target in `topic`, the configured target was lost (see [pull request #34](https://github.com/jisotalo/node-red-contrib-ads-client/pull/34))
+- Bug fix: If write node was used with multiple overriding targets in `topic`, only the first target was working. Rest of the write operations failed. (see [pull request #34](https://github.com/jisotalo/node-red-contrib-ads-client/pull/34))
   - Thank you [Julian Szigethy](https://github.com/Julian-Sz) for contribution!
   - Fixes [issue #32](https://github.com/jisotalo/node-red-contrib-ads-client/issues/32)
 
