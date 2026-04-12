@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.1] - 12.04.2026
+
+### Changes
+- Bug fix: If write node was used with overriding target in `topic`, the configured target was lost (see [pull request #34](https://github.com/jisotalo/node-red-contrib-ads-client/pull/34))
+  - Thank you [Julian Szigethy](https://github.com/Julian-Sz) for contribution!
+  - Fixes [issue #32](https://github.com/jisotalo/node-red-contrib-ads-client/issues/32)
+
 ## [2.0.0] - 25.10.2025
 
 **IMPORTANT:** This is a major version update. There are **breaking changes**! 
